@@ -75,6 +75,9 @@ function RandomDeckPage() {
             <option value="ja">Japanese</option>
             <option value="zh">Chinese (Simplified)</option>
             <option value="ru">Russian</option>
+            <option value="ha">Hausa</option>
+            <option value="yo">Yoruba</option>
+            <option value="ig">Igbo</option>
           </select>
         </div>
 

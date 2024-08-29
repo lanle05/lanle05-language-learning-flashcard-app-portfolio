@@ -64,6 +64,9 @@ export default function CreateDeckForm() {
             <option value="de">German</option>
             <option value="it">Italian</option>
             <option value="zh">Chinese</option>
+            <option value="ha">Hausa</option>
+            <option value="yo">Yoruba</option>
+            <option value="ig">Igbo</option>
           </select>
         </div>
         <div className="word-input-container">
