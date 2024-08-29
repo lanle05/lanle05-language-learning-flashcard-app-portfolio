@@ -16,27 +16,37 @@ const Signup = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setError(""); 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
+      navigate("/dashboard"); 
     } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        console.error("Email already in use. Please use another email.");
-      } else {
-        console.error("Error signing up:", error);
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          setError("This email is already in use. Please log in.");
+          break;
+        case "auth/invalid-email":
+          setError("Invalid email format.");
+          break;
+        case "auth/weak-password":
+          setError("Password is too weak. Please use a stronger password.");
+          break;
+        default:
+          setError("An unexpected error occurred. Please try again.");
       }
     }
   };
+
 
 
   const handleGoogleSignUp = async () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      // The signed-in user info.
+      
       const user = result.user;
       console.log("User:", user);
-      navigate("/dashboard"); // Redirect to dashboard on successful signup
+      navigate("/dashboard"); 
     } catch (error) {
       console.error("Error with Google sign-up:", error);
     }

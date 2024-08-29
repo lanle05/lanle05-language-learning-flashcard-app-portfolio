@@ -12,35 +12,39 @@ import { FcGoogle } from "react-icons/fc";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(""); 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
+      navigate("/dashboard"); 
     } catch (error) {
-      if (error.code === "auth/wrong-password") {
-        console.error("Wrong password. Please try again.");
-        <p>Wrong Password. Please try again</p>
-      } else if (error.code === "auth/user-not-found") {
-        console.error("No user found with this email. Please sign up.");
-        <p>No user found with this email. Please sign up.</p>;
-      } else {
-        console.error("Error logging in:", error);
+      switch (error.code) {
+        case "auth/user-not-found":
+          setError("No user found with this email.");
+          break;
+        case "auth/wrong-password":
+          setError("Incorrect password. Please try again.");
+          break;
+        case "auth/invalid-email":
+          setError("Invalid email format.");
+          break;
+        default:
+          setError("An unexpected error occurred. Please try again.");
       }
     }
   };
-
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      // The signed-in user info.
       const user = result.user;
       console.log("User:", user);
-      navigate("/dashboard"); // Redirect to dashboard on successful login
+      navigate("/dashboard"); 
     } catch (error) {
       console.error("Error with Google sign-in:", error);
     }
@@ -66,6 +70,8 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
+      {error && <p className="error-message">{error}</p>}{" "}
+     
       <button onClick={handleGoogleSignIn} className="google-auth-button">
         <FcGoogle />
         Sign In with Google

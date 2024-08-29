@@ -24,7 +24,7 @@ export default function CreateDeckForm() {
      setBaseWord("");
    } else {
      console.error("Failed to translate word");
-     // Optionally, show an error message to the user
+     
    }
  };
 
