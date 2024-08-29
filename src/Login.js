@@ -22,8 +22,10 @@ const Login = () => {
     } catch (error) {
       if (error.code === "auth/wrong-password") {
         console.error("Wrong password. Please try again.");
+        <p>Wrong Password. Please try again</p>
       } else if (error.code === "auth/user-not-found") {
         console.error("No user found with this email. Please sign up.");
+        <p>No user found with this email. Please sign up.</p>;
       } else {
         console.error("Error logging in:", error);
       }
