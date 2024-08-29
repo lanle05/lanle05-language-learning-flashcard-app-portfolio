@@ -12,14 +12,15 @@ import { FcGoogle } from "react-icons/fc";
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); 
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setError(""); 
+    setError(""); // Reset error message
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     } catch (error) {
       switch (error.code) {
         case "auth/email-already-in-use":
@@ -37,13 +38,10 @@ const Signup = () => {
     }
   };
 
-
-
   const handleGoogleSignUp = async () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      
       const user = result.user;
       console.log("User:", user);
       navigate("/dashboard"); 
@@ -72,6 +70,8 @@ const Signup = () => {
         />
         <button type="submit">Sign Up</button>
       </form>
+      {error && <p className="error-message">{error}</p>}{" "}
+      {/* Display error message */}
       <button onClick={handleGoogleSignUp} className="google-auth-button">
         <FcGoogle />
         Sign Up with Google
