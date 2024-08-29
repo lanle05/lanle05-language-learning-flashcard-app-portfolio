@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; // Ensure useState is imported
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,
@@ -12,7 +12,7 @@ import { FcGoogle } from "react-icons/fc";
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState(""); // Define the error state
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
@@ -20,7 +20,7 @@ const Signup = () => {
     setError(""); // Reset error message
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
+      navigate("/dashboard"); // Redirect to dashboard on successful signup
     } catch (error) {
       switch (error.code) {
         case "auth/email-already-in-use":
@@ -44,7 +44,7 @@ const Signup = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log("User:", user);
-      navigate("/dashboard"); 
+      navigate("/dashboard"); // Redirect to dashboard on successful signup
     } catch (error) {
       console.error("Error with Google sign-up:", error);
     }
