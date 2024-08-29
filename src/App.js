@@ -14,6 +14,8 @@ import CreateDeckForm from "./CreateDeckForm";
 import { auth } from "./firebaseConfig";
 import "./App.css";
 import DeckPage from "./DeckPage";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -27,15 +29,24 @@ function App() {
   }, []);
 
   if (isAuthenticated === null) {
-    return <p>Loading...</p>;
+    return <div>Loading...</div>;
   }
 
   return (
     <Router>
-      <div className="container">
+      {isAuthenticated && <Navbar />}
+      <div className="content">
         <Routes>
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
           <Route
             path="/dashboard"
             element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
@@ -52,13 +63,15 @@ function App() {
               isAuthenticated ? <CreateDeckForm /> : <Navigate to="/login" />
             }
           />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route
             path="/deck/:deckId"
             element={isAuthenticated ? <DeckPage /> : <Navigate to="/login" />}
           />
-          <Route path="/" element={<Navigate to="/signup" />} />
         </Routes>
       </div>
+      <Footer />
     </Router>
   );
 }

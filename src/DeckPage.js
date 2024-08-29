@@ -5,7 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import FlashcardList from "./FlashcardList";
 
 function DeckPage() {
-  const { deckId } = useParams(); // Get the deck ID from the route parameters
+  const { deckId } = useParams(); 
   const [deck, setDeck] = useState(null);
 
   useEffect(() => {

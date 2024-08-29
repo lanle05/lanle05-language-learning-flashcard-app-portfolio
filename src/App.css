@@ -1,3 +1,10 @@
+.flashcard-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
 .card {
   display: flex;
   flex-direction: column;
@@ -14,6 +21,34 @@
   transition: 150ms;
   cursor: pointer;
   transform-style: preserve-3d;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+}
+
+.card.slide-next {
+  animation-name: slideInNext;
+}
+
+.card.slide-prev {
+  animation-name: slideInPrev;
+}
+
+@keyframes slideInNext {
+  from {
+    transform: translateX(100%) perspective(1000px) rotateY(var(--rotate-y, 0));
+  }
+  to {
+    transform: translateX(0) perspective(1000px) rotateY(var(--rotate-y, 0));
+  }
+}
+
+@keyframes slideInPrev {
+  from {
+    transform: translateX(-100%) perspective(1000px) rotateY(var(--rotate-y, 0));
+  }
+  to {
+    transform: translateX(0) perspective(1000px) rotateY(var(--rotate-y, 0));
+  }
 }
 
 .card.flip {

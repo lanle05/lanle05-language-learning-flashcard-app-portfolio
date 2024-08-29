@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { translateWord } from "./api";
 import { db } from "./firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
-import Flashcard from "./Flashcard_card";
+import FlashcardList from "./FlashcardList";
 import ShareButton from "./ShareButton";
 import BackToDashboardButton from "./BackToDashboardButton";
 import "./CreateDeckForm.css";
+import { auth } from "./firebaseConfig";
 
 export default function CreateDeckForm() {
   const [baseWord, setBaseWord] = useState("");
@@ -13,14 +14,19 @@ export default function CreateDeckForm() {
   const [flashcards, setFlashcards] = useState([]);
   const [selectedLanguage, setSelectedLanguage] = useState("fr");
 
-  const handleAddFlashcard = async (e) => {
-    e.preventDefault();
+ const handleAddFlashcard = async (e) => {
+   e.preventDefault();
 
-    const translatedWord = await translateWord(baseWord, selectedLanguage);
-    const newFlashcard = { id: Date.now(), baseWord, translatedWord };
-    setFlashcards((prevFlashcards) => [...prevFlashcards, newFlashcard]);
-    setBaseWord("");
-  };
+   const translatedWord = await translateWord(baseWord, selectedLanguage);
+   if (baseWord && translatedWord) {
+     const newFlashcard = { id: Date.now(), baseWord, translatedWord };
+     setFlashcards((prevFlashcards) => [...prevFlashcards, newFlashcard]);
+     setBaseWord("");
+   } else {
+     console.error("Failed to translate word");
+     // Optionally, show an error message to the user
+   }
+ };
 
   const handleSaveDeck = async (e) => {
     e.preventDefault();
@@ -31,6 +37,7 @@ export default function CreateDeckForm() {
           name: deckName,
           flashcards: flashcards,
           language: selectedLanguage,
+          userId: auth.currentUser.uid, 
         });
         alert("Deck saved successfully!");
         setDeckName("");
@@ -43,8 +50,8 @@ export default function CreateDeckForm() {
 
   return (
     <div className="create-deck-container">
-      <BackToDashboardButton />
-      <form onSubmit={handleAddFlashcard} className="create-deck-form">
+      <h2>Create a New Deck</h2>
+      <form className="create-deck-form" onSubmit={handleAddFlashcard}>
         <div className="language-select">
           <label htmlFor="language-select">Select Language: </label>
           <select
@@ -57,7 +64,6 @@ export default function CreateDeckForm() {
             <option value="de">German</option>
             <option value="it">Italian</option>
             <option value="zh">Chinese</option>
-            {/* Add more languages as needed */}
           </select>
         </div>
         <div className="word-input-container">
@@ -68,12 +74,16 @@ export default function CreateDeckForm() {
             placeholder="Enter base word"
             required
           />
-          <button type="submit" className="add-word-button">
-            Add to Deck
-          </button>
+          <button type="submit">Add to Deck</button>
         </div>
       </form>
-      <div className="save-deck-container">
+
+      <div className="flashcards-preview">
+        <h3>Flashcards Preview</h3>
+        <FlashcardList flashcards={flashcards} />
+      </div>
+
+      <form className="save-deck-container" onSubmit={handleSaveDeck}>
         <input
           type="text"
           value={deckName}
@@ -81,20 +91,11 @@ export default function CreateDeckForm() {
           placeholder="Enter deck name"
           required
         />
-        <button onClick={handleSaveDeck} className="save-deck-button">
-          Save Deck
-        </button>
-      </div>
-      <div className="flashcards-preview">
-        {flashcards.map((flashcard) => (
-          <Flashcard key={flashcard.id} flashcard={flashcard} />
-        ))}
-      </div>
-      <ShareButton
-        title="Check out my new custom flashcard deck!"
-        text={`I just created a new flashcard deck in ${selectedLanguage}.`}
-        url={window.location.href}
-      />
+        <button type="submit">Save Deck</button>
+      </form>
+
+      <ShareButton />
+      <BackToDashboardButton />
     </div>
   );
 }

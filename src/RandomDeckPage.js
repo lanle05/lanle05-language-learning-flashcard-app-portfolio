@@ -6,6 +6,7 @@ import { collection, addDoc } from "firebase/firestore";
 import ShareButton from "./ShareButton";
 import BackToDashboardButton from "./BackToDashboardButton";
 import "./RandomDeckPage.css";
+import { auth } from "./firebaseConfig";
 
 function RandomDeckPage() {
   const [flashcards, setFlashcards] = useState([]);
@@ -22,17 +23,20 @@ function RandomDeckPage() {
       );
 
       setFlashcards(
-        translations.map((wordPair, index) => ({
-          id: index + 1,
-          ...wordPair,
-        }))
+        translations
+          .filter((wordPair) => wordPair.baseWord && wordPair.translatedWord)
+          .map((wordPair, index) => ({
+            id: index + 1,
+            ...wordPair,
+          }))
       );
     } catch (error) {
       console.error("Error generating random deck:", error);
     }
   };
 
-  const handleSaveDeck = async () => {
+  const handleSaveDeck = async (e) => {
+    e.preventDefault();
     if (deckName && flashcards.length > 0) {
       try {
         const decksCollectionRef = collection(db, "decks");
@@ -40,8 +44,11 @@ function RandomDeckPage() {
           name: deckName,
           flashcards: flashcards,
           language: selectedLanguage,
+          userId: auth.currentUser.uid, 
         });
         alert("Deck saved successfully!");
+        setDeckName("");
+        setFlashcards([]);
       } catch (error) {
         console.error("Error saving deck:", error);
       }
