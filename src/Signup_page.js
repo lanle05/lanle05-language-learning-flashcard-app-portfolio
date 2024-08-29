@@ -18,11 +18,16 @@ const Signup = () => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard"); // Redirect to dashboard on successful signup
+      navigate("/dashboard");
     } catch (error) {
-      console.error("Error signing up:", error);
+      if (error.code === "auth/email-already-in-use") {
+        console.error("Email already in use. Please use another email.");
+      } else {
+        console.error("Error signing up:", error);
+      }
     }
   };
+
 
   const handleGoogleSignUp = async () => {
     const provider = new GoogleAuthProvider();

@@ -18,11 +18,18 @@ const Login = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard"); // Redirect to dashboard on successful login
+      navigate("/dashboard");
     } catch (error) {
-      console.error("Error logging in:", error);
+      if (error.code === "auth/wrong-password") {
+        console.error("Wrong password. Please try again.");
+      } else if (error.code === "auth/user-not-found") {
+        console.error("No user found with this email. Please sign up.");
+      } else {
+        console.error("Error logging in:", error);
+      }
     }
   };
+
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
