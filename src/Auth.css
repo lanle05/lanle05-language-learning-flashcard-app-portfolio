@@ -1,4 +1,3 @@
-/* Auth.css (use for both Login.css and Signup.css) */
 .auth-container {
   max-width: 400px;
   margin: 50px auto;
@@ -38,6 +37,7 @@
 .google-auth-button img {
   width: 20px;
   margin-right: 10px;
+  height: 20px;
 }
 
 .auth-link {
