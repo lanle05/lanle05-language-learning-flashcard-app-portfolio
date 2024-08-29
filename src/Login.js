@@ -57,6 +57,7 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
       <button onClick={handleGoogleSignIn} className="google-auth-button">
+        <img src="google-icon.png" alt="Google" />
         Sign In with Google
       </button>
       <p className="auth-link">

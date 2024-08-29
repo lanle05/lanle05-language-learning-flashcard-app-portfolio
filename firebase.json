@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "site": "language-learning-flashcard-portfolio-project",
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
