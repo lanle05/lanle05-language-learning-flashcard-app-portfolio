@@ -1,0 +1,57 @@
+/* CreateDeckForm.css */
+.create-deck-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--dark-purple);
+  border-radius: 10px;
+}
+
+.create-deck-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.language-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.language-select select {
+  flex: 1;
+}
+
+.word-input-container {
+  display: flex;
+  gap: 10px;
+}
+
+.word-input-container input {
+  flex: 1;
+}
+
+.flashcards-preview {
+  margin-top: 30px;
+}
+
+.flashcard {
+  background-color: var(--secondary-purple);
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.save-deck-container {
+  margin-top: 30px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .word-input-container {
+    flex-direction: column;
+  }
+}

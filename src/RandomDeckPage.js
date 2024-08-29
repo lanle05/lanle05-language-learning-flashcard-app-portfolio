@@ -1,13 +1,17 @@
-// src/RandomDeckPage.js
 import React, { useState } from "react";
 import FlashcardList from "./FlashcardList";
 import { generateAndTranslateWord } from "./api";
-// import "./randomDeckPage.css";
+import { db } from "./firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
+import ShareButton from "./ShareButton";
+import BackToDashboardButton from "./BackToDashboardButton";
+import "./RandomDeckPage.css";
 
 function RandomDeckPage() {
   const [flashcards, setFlashcards] = useState([]);
   const [selectedLanguage, setSelectedLanguage] = useState("fr");
-  const [numCards, setNumCards] = useState(5); // Default number of cards
+  const [numCards, setNumCards] = useState(5);
+  const [deckName, setDeckName] = useState("");
 
   const fetchRandomDeck = async () => {
     try {
@@ -28,16 +32,34 @@ function RandomDeckPage() {
     }
   };
 
+  const handleSaveDeck = async () => {
+    if (deckName && flashcards.length > 0) {
+      try {
+        const decksCollectionRef = collection(db, "decks");
+        await addDoc(decksCollectionRef, {
+          name: deckName,
+          flashcards: flashcards,
+          language: selectedLanguage,
+        });
+        alert("Deck saved successfully!");
+      } catch (error) {
+        console.error("Error saving deck:", error);
+      }
+    }
+  };
+
   return (
-    <div>
-      <h2>Create a Random Deck</h2>
+    <div className="random-deck-page">
+      <BackToDashboardButton />
+      <h2 className="page-title">Create a Random Deck</h2>
       <div className="controls">
-        <div className="language-selector">
+        <div className="control-group">
           <label htmlFor="language">Select Language: </label>
           <select
             id="language"
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
+            className="select-input"
           >
             <option value="fr">French</option>
             <option value="es">Spanish</option>
@@ -49,7 +71,7 @@ function RandomDeckPage() {
           </select>
         </div>
 
-        <div className="num-cards-selector">
+        <div className="control-group">
           <label htmlFor="numCards">Number of Cards: </label>
           <input
             type="number"
@@ -58,6 +80,7 @@ function RandomDeckPage() {
             onChange={(e) => setNumCards(parseInt(e.target.value, 10))}
             min="1"
             max="10"
+            className="number-input"
           />
         </div>
 
@@ -65,9 +88,28 @@ function RandomDeckPage() {
           Generate Random Deck
         </button>
       </div>
-
-      <h2>Generated Deck</h2>
+      <h2 className="section-title">Generated Deck</h2>
       <FlashcardList flashcards={flashcards} />
+      {flashcards.length > 0 && (
+        <div className="save-deck-section">
+          <input
+            type="text"
+            value={deckName}
+            onChange={(e) => setDeckName(e.target.value)}
+            placeholder="Enter deck name"
+            required
+            className="deck-name-input"
+          />
+          <button onClick={handleSaveDeck} className="save-deck-button">
+            Save Deck
+          </button>
+          <ShareButton
+            title="Check out this random flashcard deck!"
+            text={`I just generated a new flashcard deck in ${selectedLanguage}.`}
+            url={window.location.href}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import FlashcardList from "./FlashcardList";
-import { db } from "./firebaseConfig"; // Import Firestore instance
-import { collection, getDocs } from "firebase/firestore"; // Import Firestore methods
+import { useNavigate, Link } from "react-router-dom";
+import { db } from "./firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
+import "./Dashboard.css";
+import ProgressBar from "./ProgressBar";
+import ShareButton from "./ShareButton";
+import BackToDashboardButton from "./BackToDashboardButton"; // Not necessary here, but shown for consistency
 
 function Dashboard() {
   const [customDeck, setCustomDeck] = useState([]);
@@ -24,30 +27,58 @@ function Dashboard() {
   };
 
   const handleCreateDeckRedirect = () => {
-    navigate("/create-deck"); // Redirect to the correct route for deck creation
+    navigate("/create-deck");
+  };
+
+  const handleRandomDeckRedirect = () => {
+    navigate("/random-deck");
   };
 
   return (
-    <div>
+    <div className="dashboard-container">
       <h2>Dashboard</h2>
 
-      <button onClick={handleCreateDeckRedirect} className="create-deck-button">
-        Create a New Custom Deck
-      </button>
+      <div className="button-container">
+        <button
+          onClick={handleCreateDeckRedirect}
+          className="create-deck-button"
+        >
+          Create a New Custom Deck
+        </button>
+        <button
+          onClick={handleRandomDeckRedirect}
+          className="random-deck-button"
+        >
+          Create a Random Deck
+        </button>
+      </div>
+
+      <h2>Your Progress</h2>
+      <ProgressBar current={customDeck.length} total={10} />
 
       <h2>Your Decks</h2>
-      {customDeck.length > 0 ? (
-        customDeck.map((deck) => (
-          <div key={deck.id} className="deck">
-            <h3>{deck.name}</h3>
-            <FlashcardList flashcards={deck.flashcards} />
-          </div>
-        ))
-      ) : (
-        <p>No decks available. Create a new deck!</p>
-      )}
-
-      {/* Here you can add components to track progress and view past cards */}
+      <div className="decks-container">
+        {customDeck.length > 0 ? (
+          customDeck.map((deck) => (
+            <div key={deck.id} className="deck-card">
+              <Link to={`/deck/${deck.id}`} className="deck-link">
+                <h3 className="deck-name">{deck.name}</h3>
+                <p className="deck-info">Cards: {deck.flashcards.length}</p>
+                <p className="deck-info">Language: {deck.language}</p>
+              </Link>
+              <ShareButton
+                title={`Check out my ${deck.language} flashcard deck!`}
+                text={`Here are ${deck.flashcards.length} cards to help you learn ${deck.language}.`}
+                url={window.location.href}
+              />
+            </div>
+          ))
+        ) : (
+          <p className="no-decks-message">
+            No decks available. Create a new deck!
+          </p>
+        )}
+      </div>
     </div>
   );
 }

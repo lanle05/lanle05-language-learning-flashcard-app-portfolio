@@ -6,6 +6,7 @@ import {
 } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 import { Link, useNavigate } from "react-router-dom";
+import "./Auth.css";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -36,9 +37,9 @@ const Signup = () => {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       <h2>Sign Up</h2>
-      <form onSubmit={handleSignup}>
+      <form onSubmit={handleSignup} className="auth-form">
         <input
           type="email"
           value={email}
@@ -55,8 +56,10 @@ const Signup = () => {
         />
         <button type="submit">Sign Up</button>
       </form>
-      <button onClick={handleGoogleSignUp}>Sign Up with Google</button>
-      <p>
+      <button onClick={handleGoogleSignUp} className="google-auth-button">
+        Sign Up with Google
+      </button>
+      <p className="auth-link">
         Already have an account? <Link to="/login">Log in</Link>
       </p>
     </div>

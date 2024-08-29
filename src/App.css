@@ -1,7 +1,3 @@
-body {
-  background-color: beige;
-}
-
 .card {
   display: flex;
   flex-direction: column;
@@ -62,4 +58,72 @@ body {
     font-size: 14px;
     padding: 8px 16px;
   }
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--black);
+  color: var(--white);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+h1, h2, h3 {
+  margin-bottom: 20px;
+  color: var(--primary-purple);
+}
+
+button {
+  background-color: var(--primary-purple);
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--secondary-purple);
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid var(--gray);
+  border-radius: 5px;
+  background-color: var(--light-gray);
+  color: var(--black);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+}
+
+:root {
+  --primary-purple: #8A2BE2;
+  --secondary-purple: #9370DB;
+  --dark-purple: #4B0082;
+  --light-purple: #E6E6FA;
+  --black: #1A1A1A;
+  --white: #FFFFFF;
+  --gray: #808080;
+  --light-gray: #D3D3D3;
 }

@@ -10,32 +10,29 @@ import Dashboard from "./Dashboard";
 import RandomDeckPage from "./RandomDeckPage";
 import Login from "./Login";
 import Signup from "./Signup_page";
-import CreateDeckForm from "./CreateDeckForm"; // Import the CreateDeckForm component
-import { auth } from "./firebaseConfig"; // Import auth from firebaseConfig
-import "./app.css";
+import CreateDeckForm from "./CreateDeckForm";
+import { auth } from "./firebaseConfig";
+import "./App.css";
+import DeckPage from "./DeckPage";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(null); // Use null as initial state to check for loading
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsAuthenticated(true); // User is authenticated
-      } else {
-        setIsAuthenticated(false); // User is not authenticated
-      }
+      setIsAuthenticated(!!user);
     });
 
-    return () => unsubscribe(); // Cleanup the subscription on unmount
+    return () => unsubscribe();
   }, []);
 
   if (isAuthenticated === null) {
-    return <p>Loading...</p>; // Loading state while checking authentication
+    return <p>Loading...</p>;
   }
 
   return (
     <Router>
-      <div>
+      <div className="container">
         <Routes>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
@@ -54,6 +51,10 @@ function App() {
             element={
               isAuthenticated ? <CreateDeckForm /> : <Navigate to="/login" />
             }
+          />
+          <Route
+            path="/deck/:deckId"
+            element={isAuthenticated ? <DeckPage /> : <Navigate to="/login" />}
           />
           <Route path="/" element={<Navigate to="/signup" />} />
         </Routes>

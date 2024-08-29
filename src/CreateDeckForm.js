@@ -1,47 +1,40 @@
 import React, { useState } from "react";
 import { translateWord } from "./api";
-import { db } from "./firebaseConfig"; // Import Firestore instance
-import { collection, addDoc } from "firebase/firestore"; // Import Firestore methods
+import { db } from "./firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
+import Flashcard from "./Flashcard_card";
+import ShareButton from "./ShareButton";
+import BackToDashboardButton from "./BackToDashboardButton";
+import "./CreateDeckForm.css";
 
 export default function CreateDeckForm() {
   const [baseWord, setBaseWord] = useState("");
   const [deckName, setDeckName] = useState("");
   const [flashcards, setFlashcards] = useState([]);
-  const [selectedLanguage, setSelectedLanguage] = useState(""); // Language selection state
+  const [selectedLanguage, setSelectedLanguage] = useState("fr");
 
-  const handleAddFlashcard = async (flashcard) => {
-    setFlashcards((prevFlashcards) => [...prevFlashcards, flashcard]);
-  };
-
-  const handleSubmit = async (e) => {
+  const handleAddFlashcard = async (e) => {
     e.preventDefault();
 
-    // Translate the base word
     const translatedWord = await translateWord(baseWord, selectedLanguage);
-    // Add the flashcard to the local state
-    handleAddFlashcard({ id: Date.now(), baseWord, translatedWord });
-
-    // Reset base word input
+    const newFlashcard = { id: Date.now(), baseWord, translatedWord };
+    setFlashcards((prevFlashcards) => [...prevFlashcards, newFlashcard]);
     setBaseWord("");
   };
 
-  const handleSaveDeck = async () => {
+  const handleSaveDeck = async (e) => {
+    e.preventDefault();
     if (deckName && flashcards.length > 0) {
       try {
-        // Reference to Firestore collection
         const decksCollectionRef = collection(db, "decks");
-
-        // Add new deck to Firestore
         await addDoc(decksCollectionRef, {
           name: deckName,
-          language: selectedLanguage, // Save the selected language
           flashcards: flashcards,
+          language: selectedLanguage,
         });
-
-        // Reset form
+        alert("Deck saved successfully!");
         setDeckName("");
         setFlashcards([]);
-        setSelectedLanguage(""); // Reset language selection
       } catch (error) {
         console.error("Error saving deck:", error);
       }
@@ -49,36 +42,38 @@ export default function CreateDeckForm() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="create-deck-form">
-        <select
-          value={selectedLanguage}
-          onChange={(e) => setSelectedLanguage(e.target.value)}
-          required
-        >
-          <option value="" disabled>
-            Select Language
-          </option>
-          <option value="es">Spanish</option>
-          <option value="fr">French</option>
-          <option value="de">German</option>
-          <option value="it">Italian</option>
-          {/* Add more languages as needed */}
-        </select>
-
-        <input
-          type="text"
-          value={baseWord}
-          onChange={(e) => setBaseWord(e.target.value)}
-          placeholder="Enter base word"
-          required
-        />
-        <button type="submit" className="add-word-button">
-          Add to Deck
-        </button>
+    <div className="create-deck-container">
+      <BackToDashboardButton />
+      <form onSubmit={handleAddFlashcard} className="create-deck-form">
+        <div className="language-select">
+          <label htmlFor="language-select">Select Language: </label>
+          <select
+            id="language-select"
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value)}
+          >
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="zh">Chinese</option>
+            {/* Add more languages as needed */}
+          </select>
+        </div>
+        <div className="word-input-container">
+          <input
+            type="text"
+            value={baseWord}
+            onChange={(e) => setBaseWord(e.target.value)}
+            placeholder="Enter base word"
+            required
+          />
+          <button type="submit" className="add-word-button">
+            Add to Deck
+          </button>
+        </div>
       </form>
-
-      <div>
+      <div className="save-deck-container">
         <input
           type="text"
           value={deckName}
@@ -90,21 +85,16 @@ export default function CreateDeckForm() {
           Save Deck
         </button>
       </div>
-
-      {/* Display the flashcards immediately */}
-      <div className="flashcards-list">
-        <h3>Flashcards in Deck</h3>
-        {flashcards.length > 0 ? (
-          flashcards.map((flashcard) => (
-            <div key={flashcard.id} className="flashcard">
-              <p>Base Word: {flashcard.baseWord}</p>
-              <p>Translated Word: {flashcard.translatedWord}</p>
-            </div>
-          ))
-        ) : (
-          <p>No flashcards added yet.</p>
-        )}
+      <div className="flashcards-preview">
+        {flashcards.map((flashcard) => (
+          <Flashcard key={flashcard.id} flashcard={flashcard} />
+        ))}
       </div>
+      <ShareButton
+        title="Check out my new custom flashcard deck!"
+        text={`I just created a new flashcard deck in ${selectedLanguage}.`}
+        url={window.location.href}
+      />
     </div>
   );
 }
