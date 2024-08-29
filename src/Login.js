@@ -7,6 +7,7 @@ import {
 import { auth } from "./firebaseConfig";
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -57,7 +58,7 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
       <button onClick={handleGoogleSignIn} className="google-auth-button">
-        <img src="google-icon.png" alt="Google" />
+        <FcGoogle />
         Sign In with Google
       </button>
       <p className="auth-link">
