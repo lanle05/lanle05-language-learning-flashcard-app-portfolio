@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install --omit=dev --no-optional --registry=https://registry.cloudflare.com--network-timeout=1000000
+RUN npm install --omit=dev --registry=https://registry.cloudflare.com--network-timeout=1000000
 
 COPY . .
 
