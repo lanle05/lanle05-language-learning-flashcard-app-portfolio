@@ -1,0 +1,31 @@
+name: Build and Push Docker Image
+
+# This tells GitHub to run this action on any push to the "main" branch
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use a standard Linux build machine
+    
+    steps:
+      - name: Set up Docker Hub image name
+        run: echo "imageName=lanle05/flashcardapp:1.0" >> $GITHUB_ENV
+        # !!! IMPORTANT: Change "your-dockerhub-username" to your actual Docker Hub username !!!
+
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Downloads your code to the build machine
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.imageName }} # Tags the image with the name from step 1
