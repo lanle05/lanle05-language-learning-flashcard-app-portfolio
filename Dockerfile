@@ -4,7 +4,11 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install --legacy-peer-deps --omit=dev --registry=https://registry.cloudflare.com --network-timeout=1000000
+# NEW LINE: Force delete the package-lock.json
+RUN rm -f package-lock.json
+
+# SIMPLIFIED COMMAND:
+RUN npm install --legacy-peer-deps --omit=dev
 
 COPY . .
 
