@@ -7,6 +7,8 @@ COPY package.json ./
 # Install all dependencies (including dev ones) to run the build
 RUN npm install --legacy-peer-deps
 
+RUN npm install ajv@8
+
 COPY . .
 
 # This creates a "build" folder with your production website
