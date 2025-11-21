@@ -4,10 +4,7 @@ WORKDIR /app
 
 COPY package.json ./
 
-# Install all dependencies (including dev ones) to run the build
-RUN npm install --legacy-peer-deps
-
-RUN npm install ajv@8
+RUN npm install --legacy-peer-deps && npm install react-scripts ajv@8 --legacy-peer-deps
 
 COPY . .
 
