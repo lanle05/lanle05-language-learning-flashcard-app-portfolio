@@ -1,19 +1,21 @@
-FROM node:22-alpine
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
 COPY package.json ./
 
-# # NEW LINE: Force delete the package-lock.json
-# RUN rm -f package-lock.json
-
-# SIMPLIFIED COMMAND:
-RUN npm install --legacy-peer-deps 
+# Install all dependencies (including dev ones) to run the build
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
-ENV PORT=8080
+# This creates a "build" folder with your production website
+RUN npm run build
 
-EXPOSE 8080
+FROM nginx:alpine
 
-CMD ["npm", "start"]
+COPY --from=builder /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
